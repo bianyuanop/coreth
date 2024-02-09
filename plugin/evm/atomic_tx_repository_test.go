@@ -104,8 +104,12 @@ func verifyTxs(t testing.TB, repo AtomicTxRepository, txMap map[uint64][]*Tx) {
 		assert.NoErrorf(t, err, "unexpected error on GetByHeight at height=%d", height)
 		assert.Lenf(t, txs, len(expectedTxs), "wrong len of txs at height=%d", height)
 		// txs should be stored in order of txID
-		slices.SortFunc(expectedTxs, func(i, j *Tx) bool {
-			return i.Less(j)
+		slices.SortFunc(expectedTxs, func(i, j *Tx) int {
+			if i.Less(j) {
+				return -1
+			} else {
+				return 1
+			}
 		})
 
 		txIDs := set.Set[ids.ID]{}
